@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/python:3.11-bullseye
+    volumes:
+      - .:/workspaces/${localWorkspaceFolderBasename}
+    working_dir: /workspaces/${localWorkspaceFolderBasename}
+    command: sleep infinity  # Keeps the container running
+
+  # Redis service
+  redis:
+    image: redis:alpine
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
