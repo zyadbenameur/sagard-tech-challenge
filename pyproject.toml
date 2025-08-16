@@ -1,0 +1,28 @@
+[project]
+name = "fund-load-project"
+version = "0.1.0"
+description = "A blockchain registry for financial transaction records with processing restrictions"
+authors = [
+    { name = "Zyad Benameur", email = "zyad.benameur@hec.ca" }
+]
+requires-python = ">=3.8"
+
+dependencies = [
+    "redis>=6.4.0",
+    "pytest",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["fund_load_project/src"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["fund_load_project"]
