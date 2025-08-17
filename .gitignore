@@ -2,4 +2,7 @@
 fund_load_project/__pycache__/
 fund_load_project/fund_load_project.egg-info/
 fund_load_project/src/__pycache__/
+fund_load_project/tests/__pycache__/
+fund_load_project/src/fund_load_project.egg-info/
 fund_load_project_tests/__pycache__/
+fund_load_project.egg-info/
