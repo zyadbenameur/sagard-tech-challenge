@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime, time
 import re
 from ._constants import (
     TRANSACTION_ID_FORMAT,
@@ -34,12 +34,17 @@ class Transaction:
         )
 
         # Process timestamp
-        date_part, time_part, full_timestamp = self._process_timestamp_field(
-            transaction_data["time"]
-        )
-        self.transaction_date = date_part
-        self.transaction_time = time_part
-        self.transaction_datetime = full_timestamp
+        (
+            transaction_datetime,
+            transaction_date,
+            transaction_time,
+            transaction_timetamp,
+        ) = self._process_timestamp_field(transaction_data["time"])
+
+        self.transaction_datetime = transaction_datetime
+        self.transaction_date = transaction_date
+        self.transaction_time = transaction_time
+        self.transaction_timetamp = transaction_timetamp
 
         # Process amount
         self.load_amount = self._process_amount_field(transaction_data["load_amount"])
@@ -77,7 +82,7 @@ class Transaction:
     @classmethod
     def _process_timestamp_field(
         cls, transaction_datetime: str
-    ) -> tuple[str, str, str]:
+    ) -> tuple[datetime, date, time, float]:
         """Clean and validate timestamp, returns (date, time, full_timestamp)."""
 
         try:
@@ -85,10 +90,19 @@ class Transaction:
         except ValueError:
             raise ValueError(f"Invalid timestamp format: {transaction_datetime}")
 
-        transaction_date = transaction_datetime[:10]
-        transaction_time = transaction_datetime[11:]
+        clean_transaction_datetime = datetime.strptime(
+            transaction_datetime, DATETIME_FORMAT
+        )
+        transaction_date = clean_transaction_datetime.date()
+        transaction_time = clean_transaction_datetime.time()
+        transaction_timetamp = clean_transaction_datetime.timestamp()
 
-        return (transaction_date, transaction_time, transaction_datetime)
+        return (
+            clean_transaction_datetime,
+            transaction_date,
+            transaction_time,
+            transaction_timetamp,
+        )
 
     @classmethod
     def _process_amount_field(cls, transaction_amount: str) -> float:
@@ -97,23 +111,24 @@ class Transaction:
         if not re.match(AMOUNT_PATTERN, transaction_amount):
             raise ValueError(f"Invalid amount format: {transaction_amount}")
 
-        clean_transaction_amount = float(transaction_amount.replace("$", ""))
+        clean_transaction_amount = transaction_amount.replace("$", "")
+        clean_transaction_amount = float(clean_transaction_amount.replace("USD", ""))
 
         return clean_transaction_amount
 
-    def to_dict(self) -> dict[str, str | int | float]:
+    def to_dict(self) -> dict[str, str | float]:
         """Convert transaction to dictionary format."""
         return {
             "id": self.transaction_id,
             "customer_id": self.customer_id,
-            "transaction_date": self.transaction_date,
-            "transaction_time": self.transaction_time,
-            "transaction_datetime": self.transaction_datetime,
+            "transaction_date": str(self.transaction_date),
+            "transaction_time": str(self.transaction_time),
+            "transaction_datetime": str(self.transaction_datetime),
             "load_amount": self.load_amount,
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> "Transaction":
+    def from_dict(cls, data: dict[str, str | int]) -> "Transaction":
         """
         Create a Transaction instance from a dictionary with keys:
         'id', 'customer_id', 'transaction_date', 'transaction_time',
@@ -133,10 +148,10 @@ class Transaction:
                 raise ValueError(f"Missing required field in from_dict: {field}")
 
         # Prepare the data in the format expected by __init__
-        transformed_data = {
-            "id": data["id"],
-            "customer_id": data["customer_id"],
-            "time": data["transaction_datetime"],
+        transformed_data: dict[str, str] = {
+            "id": str(data["id"]),
+            "customer_id": str(data["customer_id"]),
+            "time": str(data["transaction_datetime"]),
             "load_amount": "$" + str(data["load_amount"]),
         }
 
