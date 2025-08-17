@@ -1,11 +1,10 @@
 [project]
 name = "fund-load-project"
 version = "0.1.0"
-description = "A blockchain registry for financial transaction records with processing restrictions"
 authors = [
     { name = "Zyad Benameur", email = "zyad.benameur@hec.ca" }
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 
 dependencies = [
     "redis>=6.4.0",
@@ -17,8 +16,8 @@ dev = [
     "pytest",
 ]
 
-[tool.setuptools]
-packages = ["fund_load_project"]
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 pythonpath = ["tests"]
