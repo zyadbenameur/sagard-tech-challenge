@@ -1,65 +1,76 @@
 import json
-import os
-import sys
+from pathlib import Path
+from src._constants import INPUT_FILE, OUTPUT_FOLDER
+from src._utils import (
+    append_validation_result,
+    clean_directory,
+)
 from src.transactions import Transaction
-
+from src.validator import Success, TransactionValidator
 from src.redis_storage import RedisTimeSeriesStorage
+from src.blockchain import BaseBlockchain
 
-# def process_and_report(blockchain, transaction_dict):
-#     accepted = blockchain.add_transaction(transaction_dict)
-#     output = {
-#         "id": transaction_dict["id"],
-#         "customer_id": transaction_dict["customer_id"],
-#         "accepted": accepted
-#     }
-#     print(json.dumps(output))
 
-if __name__ == "__main__":
-    # blockchain = Blockchain()
-    # script_dir = os.path.dirname(os.path.abspath(__file__))
-    # input_file = os.path.abspath(os.path.join(script_dir, "../inputs/input.txt"))
+def process_transaction_line(
+    line: str,
+    storage: RedisTimeSeriesStorage,
+    validator: TransactionValidator,
+    output_folder: Path,
+    blockchain: BaseBlockchain,
+) -> None:
+    """Parse a line as a transaction, validate it, store result, and append to blockchain if valid."""
 
-    # with open(input_file, "r") as f:
-    #     for line in f:
-    #         line = line.strip()
-    #         if not line:
-    #             continue
-    #         try:
-    #             transaction = json.loads(line)
-    #             process_and_report(blockchain, transaction)
-    #         except Exception as e:
-    #             print(f"Error processing line: {line}\n{e}", file=sys.stderr)
+    # Parse JSON line to dictionary
+    transaction_dict = json.loads(line)
 
-    # # print the blockchain
-    # computed_blockchain = blockchain.get_chain()
-    # # print("Blockchain state:")
-    # # write the chain to a json file
-    # output_file = os.path.abspath(os.path.join(script_dir, "../outputs/output.json"))
-    # with open(output_file, "w") as f:
-    #     json.dump(computed_blockchain, f, indent=4)
+    # Create Transaction object
+    transaction = Transaction(transaction_dict)
 
-    # 1. Instantiate the storage
+    # Store transaction in Redis
+    storage.store_customer_transaction(transaction)
+
+    # Validate transaction
+    result = validator.validate_transaction(transaction)
+
+    # Append to JSONL file with accepted status
+    append_validation_result(output_folder, transaction, result)
+
+    # If transaction is valid, add to blockchain
+    if isinstance(result, Success):
+        blockchain.add_transaction(transaction)
+
+
+def main() -> None:
+    """Main entry point: orchestrates reading, validating, and recording transactions."""
+
+    output_folder = Path(OUTPUT_FOLDER)
+
+    # clean output folder and start fresh
+    clean_directory(output_folder)
+
     storage = RedisTimeSeriesStorage()
+    storage.clear_all_transactions()
 
-    # 2. receive a transaction
-    transaction = Transaction(
-        {
-            "id": "14837",
-            "customer_id": "86",
-            "load_amount": "$312.33",
-            "time": "2000-01-25T05:57:38Z",
-        }
+    validator = TransactionValidator(storage)
+
+    blockchain = BaseBlockchain(
+        storage_path=OUTPUT_FOLDER + "blockchain.json",
     )
 
-    print(transaction)
+    print("Starting transaction processing...")
 
-    # 3. Store the transaction
-    storage.store_transaction(transaction)
-    print("Transaction stored successfully.")
+    with open(INPUT_FILE, "r") as f:
+        for raw_line in f:
+            line = raw_line.strip()
+            if not line:
+                continue
+            process_transaction_line(
+                line, storage, validator, output_folder, blockchain
+            )
 
-    # 4. Retrieve the latest transaction for a customer
-    latest_tx = storage.get_customer_latest_transaction("86")
-    if latest_tx:
-        print("Latest transaction found:", latest_tx.to_dict())
-    else:
-        print("No transactions found for that customer.")
+    print("Finished processing all transactions.")
+
+
+if __name__ == "__main__":
+
+    main()
