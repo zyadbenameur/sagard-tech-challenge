@@ -16,14 +16,7 @@ This project was developed under the following assumptions to simplify developme
 
 
 ##  Project Structure
-
-.devcontainer/  
-│ ├── devcontainer.json  # Defines the container environment, services, ports, extensions, etc.  
-│ └── docker-compose.yml # Docker Compose file used to spin up the development environment (app + Redis)  
-│  
-.vscode/    
-│ └── settings.json # Custom VS Code settings for this workspace (e.g., formatter, linting rules)  
-│  
+  
 fund-load-project/  
 ├── inputs/ # Raw input files  
 │ └── input.txt  
