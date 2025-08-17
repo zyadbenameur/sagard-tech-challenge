@@ -2,7 +2,7 @@
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python-envs.pythonProjects": [],
     "python.testing.pytestArgs": [
-        "fund_load_project_tests"
+        "fund_load_project/tests"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
