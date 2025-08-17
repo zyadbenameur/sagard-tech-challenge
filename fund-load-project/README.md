@@ -59,7 +59,7 @@ fund-load-project/
 This project is developed and tested within GitHub Codespaces using a predefined `devcontainer.json`.  
 Everything—from Python 3.11 to Redis—is installed and is running by the time your Codespace is created. You just need to click and go.
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/zyadbenameur/interview-quiz-finance)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/zyadbenameur/sagard-tech-challenge)
 
 When you open a Codespace:
 - **All dependencies are pre-installed**
