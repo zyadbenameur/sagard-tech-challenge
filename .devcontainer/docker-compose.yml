@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: mcr.microsoft.com/devcontainers/python:3.11-bullseye
+    image: mcr.microsoft.com/devcontainers/python:3.11-bookworm
     volumes:
       - .:/workspaces/${localWorkspaceFolderBasename}
     working_dir: /workspaces/${localWorkspaceFolderBasename}
