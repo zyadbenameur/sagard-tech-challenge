@@ -7,8 +7,8 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
-  "postCreateCommand": "pip install --user -e .[dev]",
-  "updateContentCommand": "pip install --user -e .[dev] && echo '✅ Dependencies ensured!'",
+  "postCreateCommand": "cd fund-load-project && pip install --user -e .[dev]",
+  "updateContentCommand": "cd fund-load-project && pip install --user -e .[dev] && echo '✅ Dependencies ensured!'",
   "customizations": {
     "vscode": {
       "settings": {
