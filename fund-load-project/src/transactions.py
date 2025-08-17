@@ -1,6 +1,6 @@
 from datetime import date, datetime, time
 import re
-from ._constants import (
+from _constants import (
     TRANSACTION_ID_FORMAT,
     CUSTOMER_ID_FORMAT,
     AMOUNT_PATTERN,
@@ -24,9 +24,7 @@ class Transaction:
         self._validate_required_fields(transaction_data)
 
         # Process transaction ID
-        self.transaction_id = int(
-            self._validate_transaction_id(str(transaction_data["id"]))
-        )
+        self.transaction_id = self._validate_transaction_id(str(transaction_data["id"]))
 
         # Process customer ID
         self.customer_id = self._validate_customer_id(

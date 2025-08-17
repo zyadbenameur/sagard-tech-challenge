@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 from typing import Any
-from .transactions import Transaction
-from .validator import Failure, Result, Success
+from transactions import Transaction
+from validator import Failure, Result, Success
 
 
 def append_validation_result(
@@ -15,11 +15,11 @@ def append_validation_result(
         "accepted": True if isinstance(accepted, Success) else False,
     }
 
-    filepath = folder_path / "transaction_validation_results.jsonl"
+    filepath = folder_path / "output.txt"
 
     # Append JSON line to file
     with open(filepath, "a") as f:
-        f.write(json.dumps(result) + "\n")
+        f.write(json.dumps(result, separators=(",", ":")) + "\n")
 
     # Prepare dict for detailed results
     detailed_results: dict[str, Any] = {
@@ -29,7 +29,7 @@ def append_validation_result(
         ),
     }
 
-    filepath = folder_path / "transaction_detailed_validation_results.jsonl"
+    filepath = folder_path / "output_with_detail.jsonl"
 
     # Append JSON line to file
     with open(filepath, "a") as f:

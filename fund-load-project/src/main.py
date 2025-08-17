@@ -1,14 +1,14 @@
 import json
 from pathlib import Path
-from src._constants import INPUT_FILE, OUTPUT_FOLDER
-from src._utils import (
+from _constants import INPUT_FILE, OUTPUT_FOLDER
+from _utils import (
     append_validation_result,
     clean_directory,
 )
-from src.transactions import Transaction
-from src.validator import Success, TransactionValidator
-from src.redis_storage import RedisTimeSeriesStorage
-from src.blockchain import BaseBlockchain
+from transactions import Transaction
+from validator import Success, TransactionValidator
+from redis_storage import RedisTimeSeriesStorage
+from blockchain import BaseBlockchain
 
 
 def process_transaction_line(

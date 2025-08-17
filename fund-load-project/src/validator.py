@@ -2,9 +2,9 @@ from datetime import date, datetime, timezone
 from functools import cached_property
 from typing import Any
 
-from .transactions import Transaction
+from transactions import Transaction
 
-from .redis_storage import RedisTimeSeriesStorage
+from redis_storage import RedisTimeSeriesStorage
 
 
 def generate_prime_set(maximum: int) -> set[int]:
@@ -49,8 +49,8 @@ class TransactionValidator:
     def prime_set(self):
         return generate_prime_set(self.prime_limit)
 
-    def _is_prime(self, n: int) -> bool:
-        return n in self.prime_set
+    def _is_prime(self, n: str) -> bool:
+        return int(n) in self.prime_set
 
     def _is_monday(self, date: date) -> bool:
         # Check if the given date is Monday (0 = Monday, 6 = Sunday)

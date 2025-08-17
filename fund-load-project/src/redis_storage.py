@@ -1,6 +1,6 @@
 from redis import Redis
 from redis.commands.json.path import Path
-from .transactions import Transaction
+from transactions import Transaction
 from typing import Any
 
 

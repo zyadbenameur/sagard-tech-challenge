@@ -18,6 +18,6 @@ AMOUNT_PATTERN = r"^(USD)?\$\d+\.\d{2}$"
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
-INPUT_FILE = "fund_load_project/inputs/input.txt"
+INPUT_FILE = "inputs/input.txt"
 
-OUTPUT_FOLDER = "fund_load_project/outputs/"
+OUTPUT_FOLDER = "outputs/"

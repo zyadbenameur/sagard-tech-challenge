@@ -3,7 +3,7 @@ import json
 import os
 from typing import Any, List, Optional
 from abc import ABC
-from .transactions import Transaction
+from transactions import Transaction
 
 
 class Block:
